@@ -1,0 +1,32 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div class="modal-body">
+
+<!--     {{ context.result }}-->
+    {% if context.result.success%}
+    {% if context.result.decoded_content.dependencies or context.result.decoded_content.devDependencies%}
+    <h4>Dependencies in package.json</h4>
+    {% else %}
+    <p>No dependencies found.</p>
+    {% endif %}
+    </br>
+      {% for dependency in context.result.decoded_content.dependencies %}
+      <p>
+          {{ dependency }}
+      </p>
+      {% endfor %}
+     {% for dependency in context.result.decoded_content.devDependencies %}
+      <p>
+          {{ dependency }}
+      </p>
+      {% endfor %}
+    {% else %}
+      <p>
+        {{ context.result.message }}
+      </p>
+    {% endif %}
+
+</div>
+
+{% endblock content %}

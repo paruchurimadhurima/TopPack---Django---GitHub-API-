@@ -1,0 +1,150 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<form action="{% url 'search_repo' %}" method="GET" value="{{request.GET.q}}" >
+      <div class="input-group">
+        <input type="text" name="q" value="{{request.GET.q}}" class="form-control" placeholder="Search Github" aria-label="Search" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+          <button class="btn btn-primary" type="submit" value="Search">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+
+</br>
+
+{% if context.result.success %}
+{% if context.result.total_count %}
+ <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+            Matching Results</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Full Path</th>
+                    <th>Author</th>
+                    <th>Stars</th>
+                    <th>Forks</th>
+                    <th>Import</th>
+                    <th>Github link</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th>Name</th>
+                    <th>Full Path</th>
+                    <th>Author</th>
+                    <th>Stars</th>
+                    <th>Forks</th>
+                    <th>Import</th>
+                    <th>Github link</th>
+                  </tr>
+                </tfoot>
+                <tbody>
+                    {% for result in context.result.items %}
+                    <tr>
+                        <td>{{result.name}}</td>
+                        <td>{{result.full_name}}</td>
+                        <td>{{result.owner.login}}</td>
+                        <td>{{result.stargazers_count}}</td>
+                        <td>{{result.forks_count}}</td>
+                        <td>
+                            {% if result.imported %}
+                            <button type="button"><a href="{% url 'import_repo' owner=result.owner.login repo=result.name %}" style="color:black;" >Reimport</a></button></td>
+                            {% else %}
+                                <button type="button"><a href="{% url 'import_repo' owner=result.owner.login repo=result.name %}">Import</a></button>
+                        </td>
+                            {% endif %}
+                        <td><button type="button"><a href="{{ result.owner.html_url|add:'/'|add:result.name}}" target="_blank">View Repo</a></button></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+{% else %}
+<p>
+No matching results found :(
+</p>
+{% endif %}
+    {% else %}
+    <p>
+        {{ result.message }}
+    </p>
+    {% endif %}
+
+
+<!--{% if result.success %}-->
+<!--{% if result.total_count %}-->
+<!-- <div class="card mb-3">-->
+<!--          <div class="card-header">-->
+<!--            <i class="fas fa-table"></i>-->
+<!--            Matching Results</div>-->
+<!--          <div class="card-body">-->
+<!--            <div class="table-responsive">-->
+<!--              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">-->
+<!--                <thead>-->
+<!--                  <tr>-->
+<!--                    <th>Name</th>-->
+<!--                    <th>Full Path</th>-->
+<!--                    <th>Author</th>-->
+<!--                    <th>Stars</th>-->
+<!--                    <th>Forks</th>-->
+<!--                    <th>Import</th>-->
+<!--                    <th>Github link</th>-->
+<!--                  </tr>-->
+<!--                </thead>-->
+<!--                <tfoot>-->
+<!--                  <tr>-->
+<!--                    <th>Name</th>-->
+<!--                    <th>Full Path</th>-->
+<!--                    <th>Author</th>-->
+<!--                    <th>Stars</th>-->
+<!--                    <th>Forks</th>-->
+<!--                    <th>Import</th>-->
+<!--                    <th>Github link</th>-->
+<!--                  </tr>-->
+<!--                </tfoot>-->
+<!--                <tbody>-->
+<!--                    {% for result in result.items %}-->
+<!--                    <tr>-->
+<!--                        <td>{{result.name}}</td>-->
+<!--                        <td>{{result.full_name}}</td>-->
+<!--                        <td>{{result.owner.login}}</td>-->
+<!--                        <td>{{result.stargazers_count}}</td>-->
+<!--                        <td>{{result.forks_count}}</td>-->
+<!--                        <td>-->
+<!--                            {% if result.imported %}-->
+<!--                            <button type="button"><a href="{% url 'import_repo' owner=result.owner.login repo=result.name %}" style="color:black;" >Reimport</a></button></td>-->
+<!--                            {% else %}-->
+<!--                                <button type="button"><a href="{% url 'import_repo' owner=result.owner.login repo=result.name %}">Import</a></button>-->
+<!--                        </td>-->
+<!--                            {% endif %}-->
+<!--                        <td><button type="button"><a href="{{ result.owner.html_url|add:'/'|add:result.name}}" target="_blank">View Repo</a></button></td>-->
+<!--                    </tr>-->
+<!--                    {% endfor %}-->
+<!--                    </tbody>-->
+<!--              </table>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--{% else %}-->
+<!--<p>-->
+<!--No matching results found :(-->
+<!--</p>-->
+<!--{% endif %}-->
+<!--    {% else %}-->
+<!--    <p>-->
+<!--        {{ result.message }}-->
+<!--    </p>-->
+<!--    {% endif %}-->
+
+
+{% endblock content %}
+
